@@ -1,0 +1,166 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.exoplatform.addons.wallet-contract</groupId>
+  <artifactId>ert-contract</artifactId>
+  <version>1.0.x-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>eXo Add-on:: eXo Wallet - Contracts</name>
+  <description>eXo Add-on:: eXo Wallet - Contracts</description>
+  <scm>
+    <connection>scm:git:git://github.com/exo-addons/ERT-contract.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/exo-addons/ERT-contract.git</developerConnection>
+    <url>https://github.com/exo-addons/ERT-contract</url>
+    <tag>HEAD</tag>
+  </scm>
+  <properties>
+    <!-- Ethereum We3j for Java library -->
+    <org.web3j.version>3.6.0</org.web3j.version>
+    <org.web3j-maven-plugin.version>0.3.7</org.web3j-maven-plugin.version>
+
+    <!-- Maven Plugin for JS and CSS bundling and Unit Test execution -->
+    <com.github.eirslett.frontend.version>1.6</com.github.eirslett.frontend.version>
+    <!-- **************************************** -->
+    <!-- Jenkins Settings -->
+    <jenkins.job.name>addon-ert-contract-master-ci</jenkins.job.name>
+    <!-- **************************************** -->
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.web3j</groupId>
+      <artifactId>core</artifactId>
+      <version>${org.web3j.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>ert-contract</finalName>
+    <sourceDirectory>target/generated-sources</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>**/*</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>target/generated-sources</directory>
+        <includes>
+          <include>**/*.json</include>
+          <include>**/*.bin</include>
+        </includes>
+        <excludes>
+          <exclude>org.exoplatform.addon.wallet.contract/**</exclude>
+          <exclude>**/Migrations.json</exclude>
+          <exclude>**/Migrations.bin</exclude>
+          <exclude>**/Test*.*</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.web3j</groupId>
+        <artifactId>web3j-maven-plugin</artifactId>
+        <version>${org.web3j-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-sources</goal>
+            </goals>
+            <configuration>
+              <packageName>org.exoplatform.addon.wallet.contract</packageName>
+              <sourceDestination>target/generated-sources</sourceDestination>
+              <nativeJavaType>true</nativeJavaType>
+              <outputFormat>java,bin,abi</outputFormat>
+              <soliditySourceFiles>
+                <directory>src/main/resources</directory>
+                <includes>
+                  <include>**/*.sol</include>
+                </includes>
+                <excludes>
+                  <exclude>**/Migrations.sol</exclude>
+                  <exclude>**/Test*.sol</exclude>
+                </excludes>
+              </soliditySourceFiles>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/generated-sources/org/exoplatform/addon/wallet/contract</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>target/generated-sources/org.exoplatform.addon.wallet.contract</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${com.github.eirslett.frontend.version}</version>
+        <configuration>
+          <installDirectory>target</installDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <configuration>
+              <nodeVersion>v11.4.0</nodeVersion>
+              <npmVersion>6.5.0</npmVersion>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm config</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>config set python "/usr/bin/python2.7"</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm run test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run test</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

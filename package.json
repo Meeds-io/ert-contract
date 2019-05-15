@@ -1,0 +1,13 @@
+{
+  "name": "truffle-test-contracts",
+  "version": "0.0.1",
+  "description": "Contracts test",
+  "scripts": {
+    "test": "cd src/main/resources && truffle test",
+    "ganache-cli": "ganache-cli --gasLimit 7984452 --port 8545 --mnemonic \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --networkId 4452365 --verbose --db target/ganache-data"
+  },
+  "dependencies": {
+    "truffle": "^4.1.15",
+    "truffle-contract": "^3.0.7"
+  }
+}
