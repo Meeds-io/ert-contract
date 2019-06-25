@@ -19,7 +19,7 @@ contract AccountRewarding is ERTTokenV1 {
      * @param _amount The amount of token to be transferred
      * @param _reward The amount of token to be marked as rewarded
      */
-    function reward(address _to, uint256 _amount, uint256 _reward) public onlyAdmin(2) whenNotPaused whenApproved(_to) {
+    function reward(address _to, uint256 _amount, uint256 _reward) public onlyAdmin(1) whenNotPaused whenApproved(_to) {
         // If no reward, the transfer method should be used instead
         require(_reward > 0);
 

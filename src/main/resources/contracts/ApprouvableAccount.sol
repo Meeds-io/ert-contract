@@ -38,13 +38,7 @@ contract ApprouvableAccount is DataAccess, Admin {
      * @param _target address to approve
      */
     function approveAccount(address _target) public onlyAdmin(4){
-        // Shouldn't approve a contract address
-        require(!_isContract(_target));
-
-        if (!super._isApprovedAccount(_target)) {
-            super._setApprovedAccount(_target, true);
-            emit ApprovedAccount(_target);
-        }
+        _approveAccount(_target);
     }
 
     /**
@@ -76,6 +70,16 @@ contract ApprouvableAccount is DataAccess, Admin {
           size := extcodesize(_addr)
         }
         return (size > 0);
+    }
+
+    function _approveAccount(address _target) internal {
+        // Shouldn't approve a contract address
+        require(!_isContract(_target));
+
+        if (!super._isApprovedAccount(_target)) {
+            super._setApprovedAccount(_target, true);
+            emit ApprovedAccount(_target);
+        }
     }
 
 }

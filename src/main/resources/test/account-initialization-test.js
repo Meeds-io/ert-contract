@@ -21,13 +21,13 @@ contract('AccountInitialization', function(accounts) {
   });
 
   it('Test initialize account with admin has\'t enough privileges', () => {
-    return tokenInstance.addAdmin(accountsAdmin, 3)
+    return tokenInstance.addAdmin(accountsAdmin, 1)
       .then(() => {
         return tokenInstance.initializeAccount(accountToInitialize, 0, {
           from: accountsAdmin
         });
       }).then(assert.fail).catch((error) => {
-        assert(error.message.indexOf('revert') >= 0, 'Admin level 3 shouldn\'t be able to initialize an account');
+        assert(error.message.indexOf('revert') >= 0, 'Admin level 1 shouldn\'t be able to initialize an account');
       });
   });
 
@@ -49,7 +49,7 @@ contract('AccountInitialization', function(accounts) {
         assert.isAbove(senderEtherBalance, etherToSend, 'Ether to send for account initialization should be less than ether balance of admin account');
 
         // Give admin account enough privileges
-        return tokenInstance.addAdmin(accountsAdmin, 4, {
+        return tokenInstance.addAdmin(accountsAdmin, 2, {
           from : accounts[0]
         });
       }).then(() => {

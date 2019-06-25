@@ -17,8 +17,10 @@ contract('AccountRewarding', function(accounts) {
     tokenInstance = await ERTToken.deployed();
   });
 
-  it("Test reward account with admin not having enough privileges", () => {
-    return tokenInstance.addAdmin(accountsAdmin, 1)
+  it("Test reward account with account not having enough privileges", () => {
+    return tokenInstance.approveAccount(accountToReward, {
+      from : accounts[0]
+    })
       .then(() => {
         // Approve account
         return tokenInstance.approveAccount(accountToReward, {
@@ -34,12 +36,12 @@ contract('AccountRewarding', function(accounts) {
           from: accountsAdmin
         });
       }).then(assert.fail).catch((error) => {
-        assert(error.message.indexOf('revert') >= 0, 'Admin level 1 shouldn\'t be able to reward an account');
+        assert(error.message.indexOf('revert') >= 0, 'Non admin account shouldn\'t be able to reward an account');
       });
   });
 
   it('Test reward account with admin having enough privileges', () => {
-    return tokenInstance.addAdmin(accountsAdmin, 2)
+    return tokenInstance.addAdmin(accountsAdmin, 1)
       .then(() => {
         // Approve account
         return tokenInstance.approveAccount(accountToReward, {

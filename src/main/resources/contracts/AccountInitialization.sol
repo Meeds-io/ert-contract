@@ -19,7 +19,7 @@ contract AccountInitialization is ERTTokenV1 {
      * @param _to The address of the account to initialize
      * @param _tokenAmount The amount of tokens to be transfered for account to init
      */
-    function initializeAccount(address _to, uint256 _tokenAmount) public payable onlyAdmin(4) whenNotPaused {
+    function initializeAccount(address _to, uint256 _tokenAmount) public payable onlyAdmin(2) whenNotPaused {
         // Shouldn't initialize a contract address
         require(!super._isContract(_to));
 
@@ -37,7 +37,7 @@ contract AccountInitialization is ERTTokenV1 {
         }
 
         // Approve account to initialize
-        super.approveAccount(_to);
+        super._approveAccount(_to);
 
         // Transfer intial token amount
         if (_tokenAmount > 0) {
