@@ -3,7 +3,7 @@
   <parent>
     <artifactId>maven-parent-pom</artifactId>
     <groupId>org.exoplatform</groupId>
-    <version>20-SNAPSHOT</version>
+    <version>19</version>
     <relativePath />
   </parent>
   <groupId>org.exoplatform.wallet</groupId>
