@@ -20,8 +20,7 @@
   </scm>
   <properties>
     <!-- Ethereum We3j for Java library -->
-    <org.web3j.version>3.6.0</org.web3j.version>
-    <org.web3j-maven-plugin.version>0.3.7</org.web3j-maven-plugin.version>
+    <org.web3j.version>4.2.0</org.web3j.version>
 
     <!-- Maven Plugin for JS and CSS bundling and Unit Test execution -->
     <com.github.eirslett.frontend.version>1.6</com.github.eirslett.frontend.version>
@@ -68,7 +67,7 @@
       <plugin>
         <groupId>org.web3j</groupId>
         <artifactId>web3j-maven-plugin</artifactId>
-        <version>${org.web3j-maven-plugin.version}</version>
+        <version>${org.web3j.version}</version>
         <executions>
           <execution>
             <id>generate-sources</id>
