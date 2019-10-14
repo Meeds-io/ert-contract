@@ -56,7 +56,7 @@
           <include>**/*.bin</include>
         </includes>
         <excludes>
-          <exclude>org.exoplatform.addon.wallet.contract/**</exclude>
+          <exclude>org.exoplatform.wallet.contract/**</exclude>
           <exclude>**/Migrations.json</exclude>
           <exclude>**/Migrations.bin</exclude>
           <exclude>**/Test*.*</exclude>
@@ -76,7 +76,7 @@
               <goal>generate-sources</goal>
             </goals>
             <configuration>
-              <packageName>org.exoplatform.addon.wallet.contract</packageName>
+              <packageName>org.exoplatform.wallet.contract</packageName>
               <sourceDestination>target/generated-sources</sourceDestination>
               <nativeJavaType>true</nativeJavaType>
               <outputFormat>java,bin,abi</outputFormat>
@@ -105,10 +105,10 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>target/generated-sources/org/exoplatform/addon/wallet/contract</outputDirectory>
+              <outputDirectory>target/generated-sources/org/exoplatform/wallet/contract</outputDirectory>
               <resources>
                 <resource>
-                  <directory>target/generated-sources/org.exoplatform.addon.wallet.contract</directory>
+                  <directory>target/generated-sources/org.exoplatform.wallet.contract</directory>
                 </resource>
               </resources>
             </configuration>
