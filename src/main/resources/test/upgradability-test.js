@@ -26,6 +26,7 @@ const TestTokenNewVersion = artifacts.require("TestTokenNewVersion");
 const TestTokenNewerVersion = artifacts.require("TestTokenNewerVersion");
 
 const decimals = Math.pow(10, 18);
+const toBN = web3.utils.toBN;
 
 const testDataVersion = 3;
 
@@ -72,7 +73,7 @@ contract('Upgradability', function(accounts) {
       });
   })
 
-  const fiveEtherInWei = web3.toWei("5", 'ether').toString();
+  const fiveEtherInWei = web3.utils.toWei("5", 'ether').toString();
 
   it('Send ether to Proxy', () => {
     return ERTToken.deployed()
@@ -220,7 +221,7 @@ contract('Upgradability', function(accounts) {
         assert.equal(name, 'Curries', 'has not the correct name');
         return tokenInstance.totalSupply();
       }).then(function(totalSupply) {
-        assert.equal(totalSupply.toNumber(), 100000 * decimals, 'has not the correct totalSupply');
+        assert(totalSupply.eq(toBN(100000).mul(toBN(decimals))), 'has not the correct totalSupply');
         return tokenInstance.isFrozen(accounts[5]);
       }).then(function(result) {
         assert.equal(result, false, 'accounts should be not freezen');
@@ -231,11 +232,11 @@ contract('Upgradability', function(accounts) {
     return ERTToken.deployed()
       .then(instance => {
         tokenInstance = instance;  
-        return tokenInstance.setSellPrice(web3.toWei("3", 'finney'));
+        return tokenInstance.setSellPrice(web3.utils.toWei("3", 'finney'));
       }).then(function(result) {
         return tokenInstance.getSellPrice();
       }).then(function(sellPrice) {
-        assert.equal(sellPrice.toNumber(), web3.toWei("3", 'finney').toString(), 'writing for old implementation is wrong should be the new setting ');
+        assert.equal(sellPrice.toNumber(), web3.utils.toWei("3", 'finney').toString(), 'writing for old implementation is wrong should be the new setting ');
       });
   })
 
@@ -259,12 +260,12 @@ contract('Upgradability', function(accounts) {
       }).then(() => {
         return tokenInstance.approveAccount(accounts[3]);
       }).then(() => {
-        return tokenInstance.transfer(accounts[5], 50 * decimals);
+        return tokenInstance.transfer(accounts[5], toBN(50).mul(toBN(decimals)).toString());
       }).then(receipt => {
         return tokenInstance.balanceOf(accounts[5]);
       }).then(balance => {
-        assert.equal(balance.toNumber(), 50 * decimals, 'Wrong balance of accounts[5]');
-        return tokenInstance.transfer(accounts[3], 20 * decimals, {from : accounts[5]});
+        assert.equal(balance.toString(), toBN(50).mul(toBN(decimals)).toString(), 'Wrong balance of accounts[5]');
+        return tokenInstance.transfer(accounts[3], toBN(20).mul(toBN(decimals)).toString(), {from : accounts[5]});
       }).then(assert.fail).catch(function(error) {
         assert(error.message.indexOf('revert') >= 0, "accounts[5] is frozen, thus he shouldn't be able to send his funds");
         return tokenInstance.unFreeze(accounts[5]);
@@ -272,12 +273,12 @@ contract('Upgradability', function(accounts) {
         return tokenInstance.isFrozen(accounts[5]);
       }).then(function(result) {
         assert.equal(result, false, "accounts[5] shouldn't be frozen");
-        return tokenInstance.transfer(accounts[0], 20 * decimals, {from : accounts[5]});
+        return tokenInstance.transfer(accounts[0], toBN(20).mul(toBN(decimals)).toString(), {from : accounts[5]});
       }).then(receipt => {
         return tokenInstance.balanceOf(accounts[5]);
       }).then(balance => {
         // Transfer is payed by Token, thus we can't check exact balance
-        assert.isTrue(balance.toNumber() < 30 * decimals, 'Wrong balance of accounts[5]');
+        assert.isTrue(toBN(String(balance)).lt(toBN(30).mul(toBN(decimals))), 'Wrong balance of accounts[5]');
       });
   })
 
@@ -332,7 +333,7 @@ contract('Upgradability', function(accounts) {
         tokenInstance = instance;
         return tokenInstance.totalSupply();
       }).then(function(totalSupply) {
-        assert.equal(totalSupply, 100000 * decimals, 'has not the correct totalSupply');
+        assert.equal(totalSupply, toBN(100000).mul(toBN(decimals)).toString(), 'has not the correct totalSupply');
         return tokenInstance.freeze(accounts[6]);
       }).then(function(result) {
         return tokenInstance.isFrozen(accounts[6]);
@@ -340,15 +341,15 @@ contract('Upgradability', function(accounts) {
         assert.equal(result, true, 'accounts should be frozen ');
         return tokenInstance.approveAccount(accounts[6]);
       }).then(() => {
-        return tokenInstance.transfer(accounts[6], String(50 * decimals));
+        return tokenInstance.transfer(accounts[6], toBN(50).mul(toBN(decimals)).toString());
       }).then(receipt => {
         return tokenInstance.unFreeze(accounts[6]);
       }).then(function(result) {
-        return tokenInstance.transfer(accounts[0], String(20 * decimals), {from : accounts[6]});
+        return tokenInstance.transfer(accounts[0], toBN(20).mul(toBN(decimals)).toString(), {from : accounts[6]});
       }).then(receipt => {
         return tokenInstance.balanceOf(accounts[6]);
       }).then(balance => {
-        assert.isTrue(balance.toNumber() < 30 * decimals, 'Wrong balance of accounts[6], the sender is not Frozen so he made the transfer');
+        assert.isTrue(toBN(String(balance)).lt(toBN(30).mul(toBN(decimals))), 'Wrong balance of accounts[6], the sender is not Frozen so he made the transfer');
       });
   });
 
@@ -356,21 +357,21 @@ contract('Upgradability', function(accounts) {
     return ERTToken.deployed().
       then(instance => {
         tokenInstance = instance ;
-        return tokenInstance.burn(100001 * decimals);
+        return tokenInstance.burn(toBN(100001).mul(toBN(decimals)).toString());
       }).then(assert.fail).catch(function(error) {
         assert(error.message.indexOf('revert') >= 0, 'message must contain revert: no burn with value larger than the sender s balance');
         return tokenInstance.totalSupply();
       }).then(function (totalSupply){
-        assert.equal(totalSupply.toNumber(), 100000  * decimals , 'the current total supply is wrong');
-        return tokenInstance.burn(35 * decimals , {from : accounts[0]});
+        assert.equal(totalSupply.toString(), toBN(100000).mul(toBN(decimals)).toString() , 'the current total supply is wrong');
+        return tokenInstance.burn(toBN(35).mul(toBN(decimals)).toString() , {from : accounts[0]});
       }).then(function (receipt){
         assert(receipt.logs.length = 1,'number of emitted event is wrong');
         assert.equal(receipt.logs[0].event, 'Burn','should be the "Burn" event');
         assert.equal(receipt.logs[0].args.burner, accounts[0],'the account the tokens are burned from is wrong');
-        assert.equal(receipt.logs[0].args.value, 35 * decimals,'the burned amount is wrong');
+        assert.isTrue(toBN(String(receipt.logs[0].args.value)).eq(toBN(35).mul(toBN(decimals))),'the burned amount is wrong');
         return tokenInstance.totalSupply();
       }).then(function (totalSupply){
-        assert.equal(totalSupply, (100000- 35) * decimals, 'the total Supply is wrong');
+        assert.isTrue(totalSupply.eq(toBN(100000- 35).mul(toBN(decimals))), 'the total Supply is wrong');
       });
   });
 
@@ -381,27 +382,27 @@ contract('Upgradability', function(accounts) {
         return tokenInstance.balanceOf(accounts[1]);
       }).then(function(balance) {
         assert.equal(balance.valueOf(), 0, "it should be 0");
-        return tokenInstance.mintToken(accounts[1], 50 * decimals, {from : accounts[0]});
+        return tokenInstance.mintToken(accounts[1], toBN(50).mul(toBN(decimals)).toString(), {from : accounts[0]});
       }).then(function(result) {
         assert.equal(result.logs.length, 3,'number of emitted event is wrong');
         assert.equal(result.logs[0].event, 'Transfer','should be the "Transfer" event');
         assert.equal(result.logs[0].args._from, 0,'the account the tokens are transferred from is wrong');
         assert.equal(result.logs[0].args._to, accounts[0],'the account the tokens are transferred to is wrong');
-        assert.equal(result.logs[0].args._value, 50 * decimals,'the transfer amount is wrong');
+        assert.equal(result.logs[0].args._value, toBN(50).mul(toBN(decimals)).toString(),'the transfer amount is wrong');
         assert.equal(result.logs[1].event, 'Transfer','should be the "Transfer" event');
         assert.equal(result.logs[1].args._from, accounts[0],'the account the tokens are transferred from is wrong');
         assert.equal(result.logs[1].args._to, accounts[1],'the account the tokens are transferred to is wrong');
-        assert.equal(result.logs[1].args._value, 50 * decimals,'the transfer amount is wrong')
+        assert.equal(result.logs[1].args._value, toBN(50).mul(toBN(decimals)).toString(),'the transfer amount is wrong')
         assert.equal(result.logs[2].event, 'MintedToken','should be the "MintedToken" event');
         assert.equal(result.logs[2].args.minter, accounts[0],'the account the tokens are transferred from is wrong');
         assert.equal(result.logs[2].args.target, accounts[1],'the account the tokens are transferred to is wrong');
-        assert.equal(result.logs[2].args.mintedAmount, 50 * decimals,'the minted amount is wrong');
+        assert.equal(result.logs[2].args.mintedAmount, toBN(50).mul(toBN(decimals)).toString(),'the minted amount is wrong');
         return tokenInstance.balanceOf(accounts[1]);
       }).then(function(balance) {
-        assert.equal(balance.valueOf(), 50 * decimals, "it should be 50 * 10 ^ 18");
+        assert.equal(balance.valueOf(), toBN(50).mul(toBN(decimals)).toString(), "it should be 50 * 10 ^ 18");
         return tokenInstance.totalSupply();
       }).then(function(totalSupply) {
-        assert.equal(totalSupply, (100000-35+50) * decimals, 'has not the correct totalSupply');  
+        assert.isTrue(totalSupply.eq(toBN(100000-35+50).mul(toBN(decimals))), 'has not the correct totalSupply');
       });
   });
 });

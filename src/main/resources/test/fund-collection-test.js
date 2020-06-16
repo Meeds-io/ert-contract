@@ -28,12 +28,12 @@ contract('FundCollection', function(accounts) {
       return web3.eth.sendTransaction({
         from : accounts[0],
         to: tokenInstance.address,
-        value : web3.toWei("1","ether")
+        value : web3.utils.toWei("1","ether")
       });
     }).then(() => {
       return web3.eth.getBalance(tokenInstance.address);
     }).then(balance => {
-      assert.equal(String(balance), String(web3.toWei(1,"ether")), 'Contract balance should be 1 ether');
+      assert.equal(String(balance), String(web3.utils.toWei("1","ether")), 'Contract balance should be 1 ether');
     });
   });
 });

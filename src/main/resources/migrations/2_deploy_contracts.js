@@ -27,7 +27,7 @@ var TestTokenNewVersion = artifacts.require("./test/TestTokenNewVersion.sol");
 var TestERTTokenNewDataVersion = artifacts.require("./test/TestERTTokenNewDataVersion.sol");
 var TestTokenNewerVersion = artifacts.require("./test/TestTokenNewerVersion.sol");
 
-module.exports =  function(deployer) {
+module.exports =  function(deployer, network, accounts) {
 
   let ertTokenInstance;
 
@@ -46,7 +46,9 @@ module.exports =  function(deployer) {
      .then(() => ERTToken.deployed())
      .then(ertToken => {
        ertTokenInstance = ertToken;
-       ertTokenInstance.initialize(100000 * Math.pow(10, 18), "Curries", 18, "C");
+       const toBN = web3.utils.toBN;
+       const initalAmount = toBN("100000").mul(toBN("10").pow(toBN("18"))).toString();
+       return ertTokenInstance.initialize(initalAmount, "Curries", 18, "C");
      })
 
      // For Upgrade tests

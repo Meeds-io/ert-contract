@@ -60,9 +60,10 @@ contract('AccountInitialization', function(accounts) {
         return web3.eth.getBalance(accountsAdmin);
       }).then((balance) => {
         senderEtherBalance = Number(balance);
+        assert.isAbove(senderEtherBalance, etherToSend, 'Ether to send for account initialization should be less than ether balance of admin account');
         return tokenInstance.balanceOf(accounts[0]);
       }).then((balance) => {
-        assert.isAbove(senderEtherBalance, etherToSend, 'Ether to send for account initialization should be less than ether balance of admin account');
+        assert.isAbove(Number(balance), tokensToSend, 'Tokens to send for admin account should be greater than tokens to send to admin account');
 
         // Give admin account enough privileges
         return tokenInstance.addAdmin(accountsAdmin, 2, {
@@ -78,11 +79,12 @@ contract('AccountInitialization', function(accounts) {
       }).then((balance) => {
         senderTokenBalance = balance;
         assert.isAbove(Number(senderTokenBalance), tokensToSend, 'Tokens to send for account initialization should be less than tokens balance of admin account');
+
         return tokenInstance.isApprovedAccount(accountToInitialize);
       }).then((approvedAccount) => {
         assert.equal(approvedAccount, false, "Account shouldn't be approved yet");
 
-        return tokenInstance.initializeAccount(accountToInitialize, tokensToSend, {
+        return tokenInstance.initializeAccount(accountToInitialize, String(tokensToSend), {
           from: accountsAdmin,
           value: etherToSend
         });

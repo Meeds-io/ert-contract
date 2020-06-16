@@ -14,7 +14,8 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-pragma solidity ^0.4.25 ;
+pragma solidity ^0.5.0;
+
 import "./TestERTTokenV2.sol";
 import "./TestBurn.sol";
 import "./TestMint.sol";

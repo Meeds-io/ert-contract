@@ -18,13 +18,14 @@ const ERTToken = artifacts.require("ERTToken");
 const ERTTokenDataV1 = artifacts.require("ERTTokenDataV1");
 
 const decimals = Math.pow(10, 18);
+const toBN = web3.utils.toBN;
 
 contract('DataAccess', function(accounts) {
   let tokenInstance;
 
   async function setInitialApprovedAccounts(accounts) {
     tokenInstance = await ERTToken.deployed();
-    for (account in accounts) {
+    for (const account in accounts) {
       await tokenInstance.removeAdmin(account);
       await tokenInstance.disapproveAccount(account);
     }
@@ -41,7 +42,7 @@ contract('DataAccess', function(accounts) {
   it('test contract initialization attributes', () => {
     return ERTToken.deployed().then(instance => {
       tokenInstance = instance;
-      return tokenInstance.getDataAddress(1);
+      return tokenInstance.getDataAddress("1");
     }).then(function(dataAddress) {
       assert.equal(dataAddress, ERTTokenDataV1.address, 'Token Implementation seems to have wrong data address');
       return tokenInstance.initialized();
@@ -55,7 +56,7 @@ contract('DataAccess', function(accounts) {
       assert.equal(symbol, 'C', 'has not the correct symbol');
       return tokenInstance.totalSupply();
     }).then(function(totalSupply) {
-      assert.equal(totalSupply, 100000 * decimals, 'has not the correct totalSupply');
+      assert.equal(totalSupply.toString(), web3.utils.toBN("100000").mul(web3.utils.toBN(decimals)).toString(), 'has not the correct totalSupply');
       return tokenInstance.decimals();
     }).then(function(decimals) {
       assert.equal(decimals, 18, 'has not the correct decimals');
@@ -69,22 +70,22 @@ contract('DataAccess', function(accounts) {
         from : accounts[0]
       });
     }).then(receipt => {
-      return tokenInstance.approve(accounts[1], 1 * decimals, {
+      return tokenInstance.approve(accounts[1], toBN(1).mul(toBN(decimals)).toString(), {
         from : accounts[0]
       });
     }).then(receipt => {
       return tokenInstance.allowance(accounts[0], accounts[1]);
     }).then(allowed => {
-      assert.equal(allowed.toNumber(), 1 * decimals, 'stores the allowance for delegated trasnfer');
+      assert.equal(String(1 * decimals), allowed.toString(), 'stores the allowance for delegated trasnfer');
       return tokenInstance.isApprovedAccount(accounts[0]);
     }).then(function(ownerApproved) {
       assert.equal(true, ownerApproved, 'Contract owner has to be approved');
       return tokenInstance.getSellPrice();
     }).then(function(sellPrice) {
-      assert.equal(sellPrice.toNumber(), 2000000000000000 , 'token sell price is wrong');
-      return tokenInstance.addAdmin(accounts[1], 1);
+      assert.equal(sellPrice.toString(), "2000000000000000" , 'token sell price is wrong');
+      return tokenInstance.addAdmin(accounts[1], "1");
     }).then(receipt => {
-      return tokenInstance.isAdmin(accounts[1], 1);
+      return tokenInstance.isAdmin(accounts[1], "1");
     }).then(result => {
       assert.equal(result , true, 'accounts[1] is not admin yet');
       return tokenInstance.isPaused();
@@ -106,7 +107,7 @@ contract('DataAccess', function(accounts) {
       return tokenInstance.symbol();
     }).then(result => {
       assert.equal(result , "R", 'has not the correct symbol');
-    });
+    }).catch(console.log);
   })
 
   it(`A simple user shouldn't be able to change name or symbol`, function() {
@@ -174,7 +175,7 @@ contract('DataAccess', function(accounts) {
         return web3.eth.sendTransaction({
           from : accounts[0],
           to: ERTTokenDataV1.address,
-          value : web3.toWei("1", 'ether')
+          value : web3.utils.toWei("1", 'ether')
         });
       })
       .then(assert.fail).catch(error => {
