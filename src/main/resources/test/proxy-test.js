@@ -21,7 +21,7 @@ contract('Proxy', function(accounts) {
   let tokenInstance;
   let initialProxyBalance;
 
-  const fiveWei = web3.toWei("5", 'ether').toString();
+  const fiveWei = web3.utils.toWei("5", 'ether').toString();
 
   it('Send ether to Proxy', () => {
     return ERTToken.deployed()

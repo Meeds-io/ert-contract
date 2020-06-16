@@ -18,6 +18,7 @@ const ERTToken = artifacts.require("ERTToken");
 const ERTTokenV1 = artifacts.require("ERTTokenV1");
 
 const decimals = Math.pow(10, 18);
+const toBN = web3.utils.toBN;
 
 contract('ERC20', function(accounts) {
 
@@ -42,37 +43,37 @@ contract('ERC20', function(accounts) {
   it('put 100000 * 10 ^ 18 ERTToken in the admin account', function() {
     return tokenInstance.balanceOf(accounts[0])
       .then(adminBalance => {
-        assert.equal(adminBalance.toNumber(), 100000 * decimals, "100000 * 10 ^ 18 wasn't in the admin account");
+        assert.equal(adminBalance.toString(), toBN(100000).mul(toBN(decimals)).toString(), "100000 * 10 ^ 18 wasn't in the admin account");
       });
   });
 
   it('transfer tokens', function() {
-    return tokenInstance.transfer(accounts[1], 100001 * decimals)
+    return tokenInstance.transfer(accounts[1], toBN(100001).mul(toBN(decimals)).toString(), {from : accounts[0]})
       .then(assert.fail).catch(function(error) {
         assert(error.message.indexOf('revert') >= 0, 'No transfer with exceeded tokens is allowed');
         // Test error require msg.sender != _to
-        return tokenInstance.transfer(accounts[0], 99 * decimals, {from : accounts[0]});
+        return tokenInstance.transfer(accounts[0], toBN(99).mul(toBN(decimals)).toString(), {from : accounts[0]});
       }).then(assert.fail).catch(function(error) {
         assert(error.message.indexOf('revert') >= 0, 'No self transfer is allowed');  
         // Test error require value > 0
-        return tokenInstance.transfer(accounts[5], -5 * decimals);
+        return tokenInstance.transfer(accounts[5], toBN(-5).mul(toBN(decimals)).toString());
       }).then(assert.fail).catch(function(error) {
         assert(error.message.indexOf('revert') >= 0, 'No negative tokens transfer should be allowed');
         // Test error require to != 0x0
-        return tokenInstance.transfer(0x0, 7 * decimals, {from : accounts[0]});
+        return tokenInstance.transfer("0x0000000000000000000000000000000000000000", toBN(7).mul(toBN(decimals)).toString(), {from : accounts[0]});
       }).then(assert.fail).catch(function(error) {
         assert(error.message.indexOf('revert') >= 0, 'No transfer to 0x address is allowed');
-        return tokenInstance.transfer(ERTTokenV1.address, 7 * decimals, {from : accounts[0]});
+        return tokenInstance.transfer(ERTTokenV1.address, toBN(7).mul(toBN(decimals)).toString(), {from : accounts[0]});
       }).then(assert.fail).catch(function(error) {
         assert(error.message.indexOf('revert') >= 0, 'No transfer to a contract address is allowed');
         return tokenInstance.balanceOf(accounts[0]);
       }).then(balance => {
-        assert.equal(balance.toNumber(), 100000 * decimals, 'Wrong balance of contract owner');
+        assert.equal(balance.toString(), toBN(100000).mul(toBN(decimals)).toString(), 'Wrong balance of contract owner');
         return tokenInstance.approveAccount(accounts[1], {
           from : accounts[0]
         });
       }).then(receipt => {
-        return tokenInstance.transfer(accounts[1], 6 * decimals, {
+        return tokenInstance.transfer(accounts[1], toBN(6).mul(toBN(decimals)).toString(), {
           from : accounts[0]
         });
       }).then(receipt => {
@@ -83,8 +84,8 @@ contract('ERC20', function(accounts) {
         assert.isDefined(transferLog.args, 'Transfer event should have arguments');
         assert.equal(transferLog.args._from, accounts[0], 'Transfer event should have "_from" argument that equals to accounts[0]');
         assert.equal(transferLog.args._to, accounts[1], 'Transfer event should have "_to" argument that equals to accounts[1]');
-        assert.equal(transferLog.args._value, 6 * decimals, 'Transfer event should have "_value" argument that equals to 6 tokens');
-        return tokenInstance.transfer(accounts[1], 10 * decimals, {
+        assert.equal(transferLog.args._value, toBN(6).mul(toBN(decimals)).toString(), 'Transfer event should have "_value" argument that equals to 6 tokens');
+        return tokenInstance.transfer(accounts[1], toBN(10).mul(toBN(decimals)).toString(), {
           from : accounts[0]
         });
       }).then(receipt => {
@@ -96,14 +97,14 @@ contract('ERC20', function(accounts) {
         assert.isDefined(transferLog.args, 'Transfer event should have arguments');
         assert.equal(transferLog.args._from, accounts[0], 'Transfer event should have "_from" argument that equals to accounts[0]');
         assert.equal(transferLog.args._to, accounts[1], 'Transfer event should have "_to" argument that equals to accounts[1]');
-        assert.equal(transferLog.args._value, 10 * decimals, 'Transfer event should have "_value" argument that equals to 6 tokens');
+        assert.equal(transferLog.args._value, toBN(10).mul(toBN(decimals)).toString(), 'Transfer event should have "_value" argument that equals to 6 tokens');
         return tokenInstance.balanceOf(accounts[1]);
       }).then(balance => {
-        assert.equal(balance.toNumber(), 16 * decimals,
+        assert.equal(balance.toString(), toBN(16).mul(toBN(decimals)).toString(),
             'token balance of receiver is wrong');
         return tokenInstance.balanceOf(accounts[0]);
       }).then(balance => {
-        assert.equal(balance.toNumber(), (100000 - 16) * decimals,
+        assert.equal(balance.toString(), toBN(100000 - 16).mul(toBN(decimals)).toString(),
             'token balance of sender is wrong');
       });
   });
@@ -113,19 +114,19 @@ contract('ERC20', function(accounts) {
         from : accounts[0]
       })
       .then(receipt => {
-        return tokenInstance.approve(accounts[1], 11111111111111 * decimals, {
+        return tokenInstance.approve(accounts[1], toBN(11111111111111).mul(toBN(decimals)).toString(), {
           from : accounts[0]
         });
       })
       .then(assert.fail).catch(function(error) {
         assert(error.message.indexOf('revert') >= 0, `token holder shouldn't be able to approve an amount that is greater than his balance`);
         // Test require msg.sender != _spender
-        return tokenInstance.approve(accounts[0], 11 * decimals, {
+        return tokenInstance.approve(accounts[0], toBN(11).mul(toBN(decimals)).toString(), {
           from : accounts[0]
         });
       }).then(assert.fail).catch(function(error) {
         assert(error.message.indexOf('revert') >= 0, `token holder shouldn't be able to approve tokens sending for himself`);
-        return tokenInstance.approve.call(accounts[1], 5 * decimals);
+        return tokenInstance.approve.call(accounts[1], toBN(5).mul(toBN(decimals)).toString());
       }).then(success => {
         assert.equal(success, true, 'ERC20 approve transaction failed');
       }).then(() => {
@@ -133,17 +134,17 @@ contract('ERC20', function(accounts) {
           from : accounts[0]
         });
       }).then(() => {
-        return tokenInstance.approve(accounts[2], 5 * decimals);
+        return tokenInstance.approve(accounts[2], toBN(5).mul(toBN(decimals)).toString());
       }).then(receipt => {
         const approveLog = receipt.logs.find(log => log.event === 'Approval');
         assert.isDefined(approveLog, 'Approval event is expected');
         assert.isDefined(approveLog.args, 'Approval event should have arguments');
         assert.equal(approveLog.args._owner, accounts[0], 'Approval event should have "_from" argument that equals to accounts[0]');
         assert.equal(approveLog.args._spender, accounts[2], 'Approval event should have "_to" argument that equals to accounts[1]');
-        assert.equal(approveLog.args._value, 5 * decimals, 'Approval event should have "_value" argument that equals to 6 tokens');
+        assert.equal(approveLog.args._value, toBN(5).mul(toBN(decimals)).toString(), 'Approval event should have "_value" argument that equals to 6 tokens');
         return tokenInstance.allowance(accounts[0], accounts[2]);
       }).then(allowed => {
-        assert.equal(allowed.toNumber(), 5 * decimals,
+        assert.equal(allowed.toString(), toBN(5).mul(toBN(decimals)).toString(),
           'stores the allowance for delegated trasnfer');
       });
   });
@@ -165,7 +166,7 @@ contract('ERC20', function(accounts) {
         });
       })
       .then(receipt => {
-        return tokenInstance.transfer(fromAccount, 100 * decimals);
+        return tokenInstance.transfer(fromAccount, toBN(100).mul(toBN(decimals)).toString());
       })
       .then(receipt => {
         // Reciever address should be approved first to be able to receive Tokens
@@ -178,15 +179,15 @@ contract('ERC20', function(accounts) {
           from : accounts[0]
         });
       }).then(receipt => {
-        return tokenInstance.approve(spendingAccount, 10 * decimals, {
+        return tokenInstance.approve(spendingAccount, toBN(10).mul(toBN(decimals)).toString(), {
           from : fromAccount
         });
       }).then(receipt => {
-        return tokenInstance.transferFrom(fromAccount, toAccount, 10 * decimals, {
+        return tokenInstance.transferFrom(fromAccount, toAccount, toBN(10).mul(toBN(decimals)).toString(), {
           from : spendingAccount
         });
       }).then(receipt => {
-        return tokenInstance.transferFrom(fromAccount, toAccount, 1 * decimals, {
+        return tokenInstance.transferFrom(fromAccount, toAccount, toBN(1).mul(toBN(decimals)).toString(), {
           from : spendingAccount
         });
       }).catch(error => {
@@ -195,7 +196,7 @@ contract('ERC20', function(accounts) {
         assert.equal(true, cannotTransferAgain, "Shouldn't be able to transfer again");
         return tokenInstance.balanceOf(fromAccount);
       }).then(balance => {
-        assert.equal(balance.toNumber(), 90 * decimals,
+        assert.equal(balance.toString(), toBN(90).mul(toBN(decimals)).toString(),
           'Balance of sending account is wrong');
         return tokenInstance.balanceOf(spendingAccount);
       }).then(balance => {
@@ -203,7 +204,7 @@ contract('ERC20', function(accounts) {
           'Balance of spending account is wrong');
         return tokenInstance.balanceOf(toAccount);
       }).then(balance => {
-        assert.equal(balance.toNumber(), 10 * decimals,
+        assert.equal(balance.toString(), toBN(10).mul(toBN(decimals)).toString(),
           'Balance of receiver account is wrong');
         return tokenInstance.allowance(fromAccount, spendingAccount);
       }).then(allowance => {

@@ -22,7 +22,7 @@ contract('Admin', function(accounts) {
 
   async function setInitialAdmin(accounts) {
     tokenInstance = await ERTToken.deployed();
-    for (account in accounts) {
+    for (const account in accounts) {
       await tokenInstance.removeAdmin(account);
     }
   }

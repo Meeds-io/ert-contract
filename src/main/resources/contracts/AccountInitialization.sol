@@ -14,7 +14,8 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-pragma solidity ^0.4.25 ;
+pragma solidity ^0.5.0;
+
 import "./ERTTokenV1.sol";
 
 /**
@@ -35,7 +36,7 @@ contract AccountInitialization is ERTTokenV1 {
      * @param _to The address of the account to initialize
      * @param _tokenAmount The amount of tokens to be transfered for account to init
      */
-    function initializeAccount(address _to, uint256 _tokenAmount) public payable onlyAdmin(2) whenNotPaused {
+    function initializeAccount(address payable _to, uint256 _tokenAmount) public payable onlyAdmin(2) whenNotPaused {
         // Shouldn't initialize a contract address
         require(!super._isContract(_to));
 

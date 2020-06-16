@@ -44,15 +44,15 @@ contract('AccountRewarding', function(accounts) {
         });
       }).then(() => {
         // Transfer enough funds to admin account that will reward other accounts
-        return tokenInstance.transfer(accountsAdmin, tokensToTransfer * 2, {
+        return tokenInstance.transfer(accountsAdmin, String(tokensToTransfer * 2), {
           from : accounts[0]
         })
       }).then(() => {
-        return tokenInstance.reward(accountToReward, tokensToTransfer, tokensToReward, {
+        return tokenInstance.reward(accountToReward, String(tokensToTransfer), String(tokensToReward), {
           from: accountsAdmin
         });
       }).then(assert.fail).catch((error) => {
-        assert(error.message.indexOf('revert') >= 0, 'Non admin account shouldn\'t be able to reward an account');
+        assert(error.message.indexOf('revert') >= 0, 'Non admin account shouldn\'t be able to reward an account', error);
       });
   });
 
@@ -65,7 +65,7 @@ contract('AccountRewarding', function(accounts) {
         });
       }).then(() => {
         // Transfer enough funds to admin account that will reward other accounts
-        return tokenInstance.transfer(accountsAdmin, tokensToTransfer * 2, {
+        return tokenInstance.transfer(accountsAdmin, String(tokensToTransfer * 2), {
           from : accounts[0]
         })
       }).then((balance) => {
@@ -77,7 +77,7 @@ contract('AccountRewarding', function(accounts) {
         rewardingAccountTokenBalance = Number(balance);
 
         // Send rewarded tokens
-        return tokenInstance.reward(accountToReward, tokensToTransfer, tokensToReward, {
+        return tokenInstance.reward(accountToReward, String(tokensToTransfer), String(tokensToReward), {
           from: accountsAdmin
         });
       }).then(() => {

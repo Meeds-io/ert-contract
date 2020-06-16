@@ -17,8 +17,9 @@
 const ERTToken = artifacts.require("ERTToken");
 
 const decimals = Math.pow(10, 18);
+const toBN = web3.utils.toBN;
 
-contract('AccountRewarding', function(accounts) {
+contract('AccountVesting', function(accounts) {
 
   let tokenInstance;
 
@@ -36,7 +37,7 @@ contract('AccountRewarding', function(accounts) {
   });
 
   it('Test admin account sending to not approved account', () => {
-    return tokenInstance.transfer(accountNotApproved1, tokensToSend, {
+    return tokenInstance.transfer(accountNotApproved1, String(tokensToSend), {
         from : accounts[0]
       }).then(assert.fail).catch((error) => {
         assert(error.message.indexOf('revert') >= 0, 'Admin level 5 shouldn\'t be able to send funds to not approved account');
@@ -75,7 +76,7 @@ contract('AccountRewarding', function(accounts) {
       // Ensure that vested balance is 0
       assert.equal(vestedAccountTokenBalance, 0, "Account shouldn't have a vesting balance yet");
       // Transfer tokens to account
-      return tokenInstance.transfer(accountVested, tokensToSend, {
+      return tokenInstance.transfer(accountVested, String(tokensToSend), {
         from : accounts[0]
       });
     }).then(() => {
@@ -90,14 +91,14 @@ contract('AccountRewarding', function(accounts) {
       assert.equal(Number(balance), accountTokenBalance + tokensToSend, "Account balance isn't coherent");
 
       // Transform tokens more than account balance to vested
-      return tokenInstance.transformToVested(accountVested, (Number(balance) + decimals), {
+      return tokenInstance.transformToVested(accountVested, String(Number(balance) + decimals), {
         from : accounts[0]
       });
     }).then(assert.fail).catch((error) => {
       assert(error.message.indexOf('revert') >= 0, "Shouldn't be able to transform to vested more than token balance of account");
     }).then(() => {
       // Transform tokens to account
-      return tokenInstance.transformToVested(accountVested, tokensToVest, {
+      return tokenInstance.transformToVested(accountVested, String(tokensToVest), {
         from : accounts[0]
       });
     }).then(() => {
@@ -110,7 +111,7 @@ contract('AccountRewarding', function(accounts) {
       assert.equal(Number(balance), accountTokenBalance + tokensToSend, "Account balance shouldn't be modified after transformed a part of tokens to vested");
 
       // Transfer vested tokens to a not approved account
-      return tokenInstance.transfer(accountNotApproved1, tokensToVest, {
+      return tokenInstance.transfer(accountNotApproved1, String(tokensToVest), {
         from : accountVested
       });
     }).then(() => {
@@ -132,7 +133,7 @@ contract('AccountRewarding', function(accounts) {
       assert.equal(Number(balance), accountNotApproved1Balance + tokensToVest, "'Not approved account 1' balance should be modified after receiving vested tokens");
 
       // Transfer vested tokens to a not approved account 2
-      return tokenInstance.transfer(accountNotApproved2, tokensToVest, {
+      return tokenInstance.transfer(accountNotApproved2, String(tokensToVest), {
         from : accountNotApproved1
       });
     }).then(() => {
