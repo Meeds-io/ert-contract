@@ -3,11 +3,16 @@
   "version": "0.0.1",
   "description": "Contracts test",
   "scripts": {
+    "deploy": "cd src/main/resources && truffle migrate --network ropsten --reset",
     "test": "cd src/main/resources && truffle test",
     "ganache-cli": "ganache-cli --gasLimit 7984452 --port 8545 --mnemonic \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --networkId 4452365 --verbose --db target/ganache-data"
   },
   "dependencies": {
     "@truffle/contract": "^4.2.9",
     "truffle": "^5.1.30"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "truffle-hdwallet-provider": "^1.0.17"
   }
 }

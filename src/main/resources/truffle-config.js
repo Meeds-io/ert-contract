@@ -14,6 +14,19 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+var HDWalletProvider = require("truffle-hdwallet-provider");
+const MNEMONIC = 'seminar dirt ramp side truth bring else shift execute solar small gift';
+
 module.exports = {
-  contracts_directory: './contracts'
+  contracts_directory: './contracts',
+  networks: {
+    ropsten: {
+      provider: function() {
+        return new HDWalletProvider(MNEMONIC, "https://ropsten.infura.io/v3/d355b1603771462291372496a2377a1c")
+      },
+      network_id: 3,
+      gas: 6000000,
+      gasPrice: 30000000000
+    }
+  }
 };
