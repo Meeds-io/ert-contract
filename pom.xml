@@ -39,8 +39,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     <!-- Ethereum We3j for Java library -->
     <org.web3j.version>4.5.11</org.web3j.version>
 
-    <!-- Maven Plugin for JS and CSS bundling and Unit Test execution -->
-    <com.github.eirslett.frontend.version>1.6</com.github.eirslett.frontend.version>
     <!-- **************************************** -->
     <!-- Jenkins Settings -->
     <jenkins.job.name>ert-contract-master-ci</jenkins.job.name>
@@ -128,57 +126,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                   <directory>target/generated-sources/org.exoplatform.wallet.contract</directory>
                 </resource>
               </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.github.eirslett</groupId>
-        <artifactId>frontend-maven-plugin</artifactId>
-        <version>${com.github.eirslett.frontend.version}</version>
-        <configuration>
-          <installDirectory>target</installDirectory>
-        </configuration>
-        <executions>
-          <execution>
-            <id>install node and npm</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>install-node-and-npm</goal>
-            </goals>
-            <configuration>
-              <nodeVersion>v11.4.0</nodeVersion>
-              <npmVersion>6.5.0</npmVersion>
-            </configuration>
-          </execution>
-          <execution>
-            <id>npm config</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <arguments>config set python "/usr/bin/python2.7"</arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>npm install</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <arguments>install</arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>npm run test</id>
-            <phase>test</phase>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <arguments>run test</arguments>
             </configuration>
           </execution>
         </executions>
