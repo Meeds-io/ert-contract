@@ -54,18 +54,18 @@ contract('ERC20', function(accounts) {
         // Test error require msg.sender != _to
         return tokenInstance.transfer(accounts[0], toBN(99).mul(toBN(decimals)).toString(), {from : accounts[0]});
       }).then(assert.fail).catch(function(error) {
-        assert(error.message.indexOf('revert') >= 0, 'No self transfer is allowed');  
+        assert(error.message.indexOf('revert') >= 0, 'No self transfer is allowed');
         // Test error require value > 0
         return tokenInstance.transfer(accounts[5], toBN(-5).mul(toBN(decimals)).toString());
       }).then(assert.fail).catch(function(error) {
-        assert(error.message.indexOf('revert') >= 0, 'No negative tokens transfer should be allowed');
+        assert(error.message.indexOf('value out-of-bounds') >= 0, 'No negative tokens transfer should be allowed');
         // Test error require to != 0x0
         return tokenInstance.transfer("0x0000000000000000000000000000000000000000", toBN(7).mul(toBN(decimals)).toString(), {from : accounts[0]});
       }).then(assert.fail).catch(function(error) {
-        assert(error.message.indexOf('revert') >= 0, 'No transfer to 0x address is allowed');
+        assert(error.message.indexOf('No transfer to 0x address is allowed') >= 0, 'No transfer to 0x address is allowed');
         return tokenInstance.transfer(ERTTokenV1.address, toBN(7).mul(toBN(decimals)).toString(), {from : accounts[0]});
       }).then(assert.fail).catch(function(error) {
-        assert(error.message.indexOf('revert') >= 0, 'No transfer to a contract address is allowed');
+        assert(error.message.indexOf('No transfer to 0x address is allowed') >= 0, 'No transfer to a contract address is allowed');
         return tokenInstance.balanceOf(accounts[0]);
       }).then(balance => {
         assert.equal(balance.toString(), toBN(100000).mul(toBN(decimals)).toString(), 'Wrong balance of contract owner');

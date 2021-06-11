@@ -50,3 +50,6 @@ build
 npm-debug.log
 node_modules
 hotswap-agent.properties
+
+# VSCode
+.vscode/
