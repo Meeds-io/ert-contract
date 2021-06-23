@@ -25,7 +25,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   </parent>
   <groupId>org.exoplatform.wallet</groupId>
   <artifactId>ert-contract</artifactId>
-  <version>1.1.x-SNAPSHOT</version>
+  <version>1.1.0</version>
   <packaging>jar</packaging>
   <name>eXo Wallet - ERT Contract</name>
   <description>eXo Wallet - Contracts</description>
@@ -33,7 +33,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     <connection>scm:git:git://github.com/exoplatform/ert-contract.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/exoplatform/ert-contract.git</developerConnection>
     <url>https://github.com/exoplatform/ert-contract</url>
-    <tag>HEAD</tag>
+    <tag>1.1.0</tag>
   </scm>
   <properties>
     <!-- Ethereum We3j for Java library -->
