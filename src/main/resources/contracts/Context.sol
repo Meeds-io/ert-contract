@@ -14,29 +14,27 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
 // SPDX-License-Identifier: LGPL
 
 pragma solidity 0.6.12;
+/*
+ * @dev Provides information about the current execution context, including the
+ * sender of the transaction and its data. While these are generally available
+ * via msg.sender and msg.data, they should not be accessed in such a direct
+ * manner, since when dealing with GSN meta-transactions the account sending and
+ * paying for execution may not be the actual sender (as far as an application
+ * is concerned).
+ *
+ * This contract is only required for intermediate, library-like contracts.
+ */
 
-contract Migrations {
-  address public owner;
-  uint public last_completed_migration;
+abstract contract Context {
+    function _msgSender() internal virtual view returns (address payable) {
+        return msg.sender;
+    }
 
-  constructor() public {
-    owner = msg.sender;
-  }
-
-  modifier restricted() {
-    if (msg.sender == owner) _;
-  }
-
-  function setCompleted(uint completed) public restricted {
-    last_completed_migration = completed;
-  }
-
-  function upgrade(address new_address) public restricted {
-    Migrations upgraded = Migrations(new_address);
-    upgraded.setCompleted(last_completed_migration);
-  }
+    function _msgData() internal virtual view returns (bytes memory) {
+        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
+        return msg.data;
+    }
 }
