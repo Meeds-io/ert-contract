@@ -25,7 +25,7 @@ import "./Ownable.sol";
 
 
 // StakeDaoToken with Governance.
-contract MeedsToken is ERC20("Meeds Token", "Ɱ"), Ownable {
+contract MeedsToken is ERC20("Meeds Token", "Meeds"), Ownable {
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
