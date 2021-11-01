@@ -37,7 +37,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   </scm>
   <properties>
     <!-- Ethereum We3j for Java library -->
-    <org.web3j.version>4.5.11</org.web3j.version>
+    <org.web3j.version>4.8.7</org.web3j.version>
 
     <!-- **************************************** -->
     <!-- Jenkins Settings -->

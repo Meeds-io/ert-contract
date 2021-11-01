@@ -14,26 +14,20 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-pragma solidity ^0.5.0;
+// SPDX-License-Identifier: LGPL
 
-import "../ERC20Abstract.sol";
-import "../Owned.sol";
+pragma solidity 0.6.12;
 
-contract TestMint is Owned,  ERC20Abstract{
 
-    event MintedToken(address minter, address target, uint256 mintedAmount);
+import "./ERC20.sol";
+import "./Ownable.sol";
 
-    constructor() internal{
-    }
 
-    function mintToken(address _target, uint256 _mintedAmount) public onlyOwner{
-        require(_mintedAmount > 0);
-        super._setBalance(_target, super.safeAdd(super._balanceOf(_target), _mintedAmount));
-        uint256 totalSupply = super.totalSupply();
-        require(totalSupply + _mintedAmount > totalSupply);
-        super._setTotalSupply(totalSupply + _mintedAmount);
-        emit Transfer(address(0), owner, _mintedAmount);
-        emit Transfer(owner, _target, _mintedAmount);
-        emit MintedToken(msg.sender, _target, _mintedAmount);
+
+// StakeDaoToken with Governance.
+contract MeedsToken is ERC20("Meeds Token", "Meeds"), Ownable {
+    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
+    function mint(address _to, uint256 _amount) public onlyOwner {
+        _mint(_to, _amount);
     }
 }
