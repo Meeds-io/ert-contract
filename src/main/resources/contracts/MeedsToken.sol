@@ -1148,7 +1148,7 @@ library SafeERC20 {
 
 /*
  * This file is part of the Meeds project (https://meeds.io/).
- * Copyright (C) 2020 Meeds Association
+ * Copyright (C) 2021 Meeds Association
  * contact@meeds.io
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1166,9 +1166,7 @@ library SafeERC20 {
 pragma solidity 0.6.12;
 
 
-// StakeDaoToken with Governance.
-contract MeedsToken is ERC20("Meeds Token", "Meeds"), Ownable {
-    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
+contract MeedsToken is ERC20("Meeds Token", "MEED"), Ownable {
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
     }
