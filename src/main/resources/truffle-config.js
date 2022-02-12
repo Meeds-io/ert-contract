@@ -15,5 +15,10 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 module.exports = {
-  contracts_directory: './contracts'
+    contracts_directory: './contracts',
+    compilers: {
+      solc: {
+        version: "0.6.12"
+      }
+    }
 };
