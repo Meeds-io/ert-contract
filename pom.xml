@@ -21,7 +21,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     <artifactId>maven-parent-pom</artifactId>
     <groupId>org.exoplatform</groupId>
     <version>24-M02</version>
-    <relativePath />
+    <relativePath/>
   </parent>
   <groupId>org.exoplatform.wallet</groupId>
   <artifactId>ert-contract</artifactId>
@@ -37,7 +37,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   </scm>
   <properties>
     <!-- Ethereum We3j for Java library -->
-    <org.web3j.version>4.8.7</org.web3j.version>
+    <org.web3j.version>4.9.3</org.web3j.version>
 
     <!-- **************************************** -->
     <!-- Jenkins Settings -->
