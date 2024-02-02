@@ -8,8 +8,8 @@
     "ganache-cli": "ganache-cli --gasLimit 7984452 --port 8545 --mnemonic \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --networkId 4452365 --verbose --db target/ganache-data"
   },
   "dependencies": {
-    "@truffle/contract": "^4.2.9",
+    "@truffle/contract": "^4.5.15",
     "ganache-cli": "^6.12.2",
-    "truffle": "^5.1.30"
+    "truffle": "^5.5.8"
   }
 }
